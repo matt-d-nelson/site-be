@@ -1,14 +1,24 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { FeedModule } from './feed/feed.module';
+import { Module } from '@nestjs/common'
+import { AppController } from './app.controller'
+import { AppService } from './app.service'
+import { ConfigModule } from '@nestjs/config'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { FeedModule } from './feed/feed.module'
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forRoot({
+    TypeOrmModule.forRoot(process.env.NODE_ENV === 'prod' ? {
+      // heroku config
+      type: 'postgres',
+      url: process.env.DATABASE_URL,
+      synchronize: true, 
+      autoLoadEntities: true,
+      ssl: {
+        rejectUnauthorized: false 
+      }
+    } : {
+      // local config
       type: 'postgres',
       host: process.env.POSTGRES_HOST,
       port: parseInt(<string>process.env.POSTGRES_PORT),
