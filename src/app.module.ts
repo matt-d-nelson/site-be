@@ -13,7 +13,7 @@ import { AuthModule } from './auth/auth.module';
       // heroku config
       type: 'postgres',
       url: process.env.DATABASE_URL,
-      synchronize: true, 
+      synchronize: false, 
       autoLoadEntities: true,
       ssl: {
         rejectUnauthorized: false 
@@ -28,6 +28,7 @@ import { AuthModule } from './auth/auth.module';
       database: process.env.POSTGRES_DATABASE,
       autoLoadEntities: true,
       synchronize: true,
+      logging: true,
     }),
     FeedModule,
     AuthModule,

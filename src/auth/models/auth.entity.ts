@@ -15,3 +15,12 @@ export class UserEntity {
 
     // @OneToMany(() => )
 }
+
+@Entity('org')
+export class OrgEntity {
+    @Column({ unique: true })
+    id: number
+
+    @Column()
+    name: string
+}
