@@ -2,8 +2,8 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { ROLE } from "./auth.interface";
 
 
-@Entity('user')
-export class UserEntity {
+@Entity('auth-user')
+export class AuthUserEntity {
     @PrimaryGeneratedColumn()
     id: number
 
@@ -16,9 +16,9 @@ export class UserEntity {
     // @OneToMany(() => )
 }
 
-@Entity('org')
-export class OrgEntity {
-    @Column({ unique: true })
+@Entity('auth-org')
+export class AuthOrgEntity {
+    @PrimaryGeneratedColumn()
     id: number
 
     @Column()
