@@ -24,9 +24,9 @@ const prodConfig: DataSourceOptions = {
   entities: [`dist/**/*.entity.js`], 
   migrations: [`${__dirname}/migrations/*{.ts,.js}`],
   migrationsTableName: 'migrations',
-  // ssl: {
-  //   rejectUnauthorized: false,
-  // },
+  ssl: {
+    rejectUnauthorized: false,
+  },
 }
 
 const dbConfig = process.env.NODE_ENV === 'prod' ? prodConfig : devConfig
