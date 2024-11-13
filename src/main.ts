@@ -5,10 +5,13 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule)
   app.setGlobalPrefix('api')
   app.enableCors({
-    origin: ['http://localhost:4200', 'https://preeminent-faloodeh-5c4aff.netlify.app'],
+    origin: [
+      'http://localhost:4200',
+      'https://preeminent-faloodeh-5c4aff.netlify.app',
+    ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    credentials: true
+    credentials: true,
   })
   await app.listen(process.env.PORT ?? 3000)
 }
-bootstrap();
+bootstrap()
