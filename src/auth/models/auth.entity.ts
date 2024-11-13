@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { ROLE } from "./auth.interface";
 
 
@@ -10,10 +10,8 @@ export class AuthUserEntity {
     @Column({ unique: true })
     email: string
 
-    @Column({ type: 'enum', enum: ROLE, default: ROLE.USER})
-    role: ROLE
-
-    // @OneToMany(() => )
+    @Column({ select: false })
+    password: string
 }
 
 @Entity('auth-org')
@@ -23,4 +21,19 @@ export class AuthOrgEntity {
 
     @Column()
     name: string
+}
+
+@Entity('auth-org-role')
+export class AuthOrgRoleEntity {
+    @PrimaryGeneratedColumn()
+    id: number
+
+    @ManyToOne(() => AuthUserEntity, (authUserEntity) => authUserEntity.id)
+    user_id: number
+
+    @ManyToOne(() => AuthOrgEntity, (authOrgEntity) => authOrgEntity.id)
+    org_id: number
+
+    @Column({ type: 'enum', enum: ROLE, default: ROLE.USER})
+    role: ROLE
 }
