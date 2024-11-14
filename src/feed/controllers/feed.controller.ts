@@ -3,7 +3,7 @@ import { FeedService } from '../services/feed.service'
 import { FeedPost } from '../models/post.interface'
 import { Observable } from 'rxjs'
 import { DeleteResult, UpdateResult } from 'typeorm'
-import { JwtGuard } from 'src/auth/guards/jwt.guard'
+import { JwtGuard } from 'src/auth/guards/jwt/jwt.guard'
 
 @Controller('feed')
 export class FeedController {

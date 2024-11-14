@@ -8,8 +8,8 @@ import {
   AuthUserEntity,
 } from './models/auth.entity'
 import { JwtModule } from '@nestjs/jwt'
-import { JwtGuard } from './guards/jwt.guard'
-import { JwtStrategy } from './guards/jwt.strategy'
+import { JwtGuard } from './guards/jwt/jwt.guard'
+import { JwtStrategy } from './guards/jwt/jwt.strategy'
 
 @Module({
   imports: [
