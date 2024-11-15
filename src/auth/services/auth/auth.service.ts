@@ -60,35 +60,39 @@ export class AuthService {
                     }
                 })
             )
-        }),
-        switchMap((user: AuthUser) => {
-          return from(this.authOrgRoleRepository
-            .createQueryBuilder('authOrgRole')
-            .leftJoinAndSelect('authOrgRole.org','org')
-            .where('authOrgRole.userId = :userId', {userId: user.id})
-            .getMany()
-          ).pipe(
-            map((orgRoles) => {
-              const userWithRoles: AuthUserWithRoles = {
-                ...user,
-                roles: orgRoles.map(orgRole => ({
-                  orgId: orgRole.org,
-                  role: orgRole.role,
-                }))
-              }
-              return userWithRoles
-            })
-          )
         })
+    )
+  }
+
+  addRolesToUser(user: AuthUser): Observable<AuthUserWithRoles> {
+    return from(this.authOrgRoleRepository
+      .createQueryBuilder('authOrgRole')
+      .leftJoinAndSelect('authOrgRole.org','org')
+      .where('authOrgRole.userId = :userId', {userId: user.id})
+      .getMany()
+    ).pipe(
+      map((orgRoles) => {
+        const userWithRoles: AuthUserWithRoles = {
+          ...user,
+          roles: orgRoles.map(orgRole => ({
+            orgId: orgRole.org,
+            role: orgRole.role,
+          }))
+        }
+        return userWithRoles
+      })
     )
   }
 
   login(user: AuthUser): Observable<string> {
     const { email, password } = user
     return this.validateUser(email, password).pipe(
-        switchMap((user: AuthUserWithRoles) => {
-            return from(this.jwtService.signAsync({ user }))
-        })
+      switchMap((user: AuthUser) => {
+        return this.addRolesToUser(user)
+      }),
+      switchMap((user: AuthUserWithRoles) => {
+          return from(this.jwtService.signAsync({ user }))
+      })
     )
   }
 }
