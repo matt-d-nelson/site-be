@@ -15,7 +15,14 @@ export interface AuthOrg {
 }
 
 export interface AuthOrgRole {
-  user_id: number
-  org_id: number
+  userId: number
+  orgId: number
   role: ROLE
+}
+
+export interface AuthUserWithRoles extends AuthUser {
+  roles?: {
+    orgId: number
+    role: ROLE
+  }[]
 }

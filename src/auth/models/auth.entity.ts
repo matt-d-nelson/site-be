@@ -28,10 +28,10 @@ export class AuthOrgRoleEntity {
   id: number
 
   @ManyToOne(() => AuthUserEntity, (authUserEntity) => authUserEntity.id)
-  user_id: number
+  user: number
 
   @ManyToOne(() => AuthOrgEntity, (authOrgEntity) => authOrgEntity.id)
-  org_id: number
+  org: number
 
   @Column({ type: 'enum', enum: ROLE, default: ROLE.USER })
   role: ROLE

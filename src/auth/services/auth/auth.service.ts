@@ -3,8 +3,8 @@ import { JwtService } from '@nestjs/jwt'
 import { InjectRepository } from '@nestjs/typeorm'
 import * as bcrypt from 'bcrypt'
 import { from, map, Observable, switchMap } from 'rxjs'
-import { AuthUserEntity } from 'src/auth/models/auth.entity'
-import { AuthUser } from 'src/auth/models/auth.interface'
+import { AuthOrgEntity, AuthOrgRoleEntity, AuthUserEntity } from 'src/auth/models/auth.entity'
+import { AuthUser, AuthUserWithRoles } from 'src/auth/models/auth.interface'
 import { Repository } from 'typeorm'
 
 @Injectable()
@@ -12,6 +12,8 @@ export class AuthService {
   constructor(
     @InjectRepository(AuthUserEntity)
     private readonly authUserRepository: Repository<AuthUserEntity>,
+    @InjectRepository(AuthOrgRoleEntity)
+    private readonly authOrgRoleRepository: Repository<AuthOrgRoleEntity>,
     private jwtService: JwtService
   ) {}
 
@@ -39,7 +41,7 @@ export class AuthService {
     )
   }
 
-  validateUser(email: string, password: string): Observable<AuthUser> {
+  validateUser(email: string, password: string): Observable<AuthUserWithRoles> {
     return from(this.authUserRepository.findOne({
         where: { email },
         select: ['id', 'email', 'password']
@@ -62,12 +64,35 @@ export class AuthService {
     )
   }
 
+  addRolesToUser(user: AuthUser): Observable<AuthUserWithRoles> {
+    return from(this.authOrgRoleRepository
+      .createQueryBuilder('authOrgRole')
+      .leftJoinAndSelect('authOrgRole.org','org')
+      .where('authOrgRole.userId = :userId', {userId: user.id})
+      .getMany()
+    ).pipe(
+      map((orgRoles) => {
+        const userWithRoles: AuthUserWithRoles = {
+          ...user,
+          roles: orgRoles.map(orgRole => ({
+            orgId: orgRole.org,
+            role: orgRole.role,
+          }))
+        }
+        return userWithRoles
+      })
+    )
+  }
+
   login(user: AuthUser): Observable<string> {
     const { email, password } = user
     return this.validateUser(email, password).pipe(
-        switchMap((user: AuthUser) => {
-            return from(this.jwtService.signAsync({ user }))
-        })
+      switchMap((user: AuthUser) => {
+        return this.addRolesToUser(user)
+      }),
+      switchMap((user: AuthUserWithRoles) => {
+          return from(this.jwtService.signAsync({ user }))
+      })
     )
   }
 }
