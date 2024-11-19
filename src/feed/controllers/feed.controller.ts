@@ -14,8 +14,12 @@ export class FeedController {
 
   @Roles(ROLE.ADMIN)
   @UseGuards(JwtGuard, RolesGuard)
-  @Post()
-  create(@Body() feedPost: FeedPost, @Request() req): Observable<FeedPost> {
+  @Post(':orgId')
+  create(
+    @Param('orgId') orgId: number,
+    @Body() feedPost: FeedPost, 
+    @Request() req
+  ): Observable<FeedPost> {
     return this.feedService.createPost(req.user, feedPost)
   }
 
