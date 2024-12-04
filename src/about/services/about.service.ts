@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { AboutEntity } from '../models/about.entity/about.entity'
+import { AboutEntity } from '../models/about.entity'
 import { Repository } from 'typeorm'
 import { from, Observable, switchMap } from 'rxjs'
-import { About } from '../models/about.entity/about.interface'
+import { About } from '../models/about.interface'
 import { CloudinaryService } from 'src/cloudinary/services/cloudinary.service'
 
 @Injectable()
@@ -22,14 +22,19 @@ export class AboutService {
     const aboutFolder = `monorepo/${orgId}/upload/about/`
     return this.cloudinaryService.uploadImage(file, aboutFolder).pipe(
       switchMap((cloudinaryRes) => {
+        const orgInt = parseInt(orgId)
         return from(
           this.aboutRepository.save({
             ...aboutData,
             imageUrl: cloudinaryRes.secure_url,
-            orgId: parseInt(orgId),
+            org: orgInt
           }),
         )
-      }),
+      })
     )
+  }
+
+  getBios(orgId: string): Observable<About[]> {
+    return from(this.aboutRepository.find({where: { org: parseInt(orgId) }}))
   }
 }

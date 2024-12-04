@@ -1,5 +1,5 @@
 import { AuthOrgEntity } from 'src/auth/models/auth.entity'
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 
 @Entity('about')
 export class AboutEntity {

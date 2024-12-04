@@ -8,7 +8,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common'
 import { AboutService } from '../services/about.service'
-import { About } from '../models/about.entity/about.interface'
+import { About } from '../models/about.interface'
 import { from, Observable } from 'rxjs'
 import { FileInterceptor } from '@nestjs/platform-express'
 
@@ -26,8 +26,10 @@ export class AboutController {
     return this.aboutService.createBio(aboutData, image, orgId)
   }
 
-  @Get()
-  get() {
-    return from('hello')
+  @Get(':orgId')
+  get(
+    @Param('orgId') orgId: string
+  ) {
+    return this.aboutService.getBios(orgId)
   }
 }
