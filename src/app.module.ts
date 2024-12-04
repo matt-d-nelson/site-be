@@ -7,6 +7,7 @@ import { FeedModule } from './feed/feed.module'
 import { AuthModule } from './auth/auth.module'
 import { typeOrmAsyncConfig } from 'db/typeorm.config'
 import { AboutModule } from './about/about.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { AboutModule } from './about/about.module';
     FeedModule,
     AuthModule,
     AboutModule,
+    CloudinaryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
