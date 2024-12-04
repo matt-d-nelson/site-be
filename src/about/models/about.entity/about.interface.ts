@@ -1,8 +1,8 @@
 export interface About {
-    id: number
-    orgId: number
-    name: string
-    biography: string
-    image: string
-    isPrimary: boolean
+  id: number
+  orgId: number
+  name: string
+  biography: string
+  image: string
+  isPrimary: boolean
 }

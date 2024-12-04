@@ -3,21 +3,21 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 
 @Entity('about')
 export class AboutEntity {
-    @PrimaryGeneratedColumn()
-    id: number
+  @PrimaryGeneratedColumn()
+  id: number
 
-    @ManyToOne(() => AuthOrgEntity, (authOrgEntity) => authOrgEntity.id)
-    org: number
+  @ManyToOne(() => AuthOrgEntity, (authOrgEntity) => authOrgEntity.id)
+  org: number
 
-    @Column()
-    name: string
+  @Column()
+  name: string
 
-    @Column('text')
-    biography: string
+  @Column('text')
+  biography: string
 
-    @Column()
-    imageUrl: string
+  @Column()
+  imageUrl: string
 
-    @Column()
-    isPrimary: boolean
+  @Column()
+  isPrimary: boolean
 }

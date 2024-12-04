@@ -17,8 +17,8 @@ import { RolesGuard } from './guards/roles/roles.guard'
     JwtModule.registerAsync({
       useFactory: () => ({
         secret: process.env.JWT_SECRET,
-        signOptions: { expiresIn: '3600s' }
-      })
+        signOptions: { expiresIn: '3600s' },
+      }),
     }),
     TypeOrmModule.forFeature([
       AuthUserEntity,
