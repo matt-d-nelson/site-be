@@ -4,5 +4,6 @@ export interface About {
   name: string
   biography: string
   imageUrl: string
-  isPrimary: boolean
+  imageId: string
+  isPrimary: boolean | string
 }

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -11,6 +12,7 @@ import { AboutService } from '../services/about.service'
 import { About } from '../models/about.interface'
 import { from, Observable } from 'rxjs'
 import { FileInterceptor } from '@nestjs/platform-express'
+import { DeleteResult } from 'typeorm'
 
 @Controller('about')
 export class AboutController {
@@ -29,7 +31,14 @@ export class AboutController {
   @Get(':orgId')
   get(
     @Param('orgId') orgId: string
-  ) {
+  ): Observable<About[]> {
     return this.aboutService.getBios(orgId)
   }
+
+  @Delete(':bioId')
+  delete(
+      @Param('bioId') bioId: string
+    ): Observable<DeleteResult> {
+       return this.aboutService.deleteBio(bioId)
+    }
 }

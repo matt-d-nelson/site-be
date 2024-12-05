@@ -19,5 +19,8 @@ export class AboutEntity {
   imageUrl: string
 
   @Column()
+  imageId: string
+
+  @Column()
   isPrimary: boolean
 }
