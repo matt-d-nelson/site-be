@@ -24,4 +24,17 @@ export class CloudinaryService {
       ),
     )
   }
+
+  deleteImage(publicId: string): Observable<UploadApiResponse | UploadApiErrorResponse> {
+    return from(
+      new Promise<UploadApiResponse | UploadApiErrorResponse>(
+        (resolve, reject) => {
+          v2.uploader.destroy(publicId, (error, result) => {
+            if(error) return reject(error)
+            resolve(result)
+          })
+        }
+      )
+    )
+  }
 }

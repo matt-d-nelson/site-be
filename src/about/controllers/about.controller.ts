@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common'
@@ -13,6 +14,7 @@ import { About } from '../models/about.interface'
 import { from, Observable } from 'rxjs'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { DeleteResult } from 'typeorm'
+import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary'
 
 @Controller('about')
 export class AboutController {
@@ -35,10 +37,13 @@ export class AboutController {
     return this.aboutService.getBios(orgId)
   }
 
-  @Delete(':bioId')
+  @Delete(':orgId')
   delete(
-      @Param('bioId') bioId: string
-    ): Observable<DeleteResult> {
-       return this.aboutService.deleteBio(bioId)
+      @Param('orgId') orgId: string,
+      @Query('imageId') imageId: string,
+        @Query('bioId') bioId: string
+    ): Observable<[UploadApiResponse | UploadApiErrorResponse, DeleteResult]> {
+        console.log(orgId,imageId,bioId)
+       return this.aboutService.deleteBio(bioId, imageId)
     }
 }

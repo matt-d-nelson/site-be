@@ -2,9 +2,10 @@ import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { AboutEntity } from '../models/about.entity'
 import { DeleteResult, Repository } from 'typeorm'
-import { from, Observable, switchMap } from 'rxjs'
+import { forkJoin, from, Observable, switchMap } from 'rxjs'
 import { About } from '../models/about.interface'
 import { CloudinaryService } from 'src/cloudinary/services/cloudinary.service'
+import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary'
 
 @Injectable()
 export class AboutService {
@@ -39,7 +40,9 @@ export class AboutService {
     return from(this.aboutRepository.find({where: { org: parseInt(orgId) }}))
   }
 
-  deleteBio(bioId): Observable<DeleteResult> {
-    return from(this.aboutRepository.delete(bioId))
+  deleteBio(bioId: string, imageId: string): Observable<[UploadApiResponse | UploadApiErrorResponse, DeleteResult]> {
+    const imgDelete$ = this.cloudinaryService.deleteImage(imageId)
+    const dbDelete$ = this.aboutRepository.delete(bioId)
+    return forkJoin([imgDelete$, dbDelete$])
   }
 }
