@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Request, UseGuards } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Request,
+  UseGuards,
+} from '@nestjs/common'
 import { FeedService } from '../services/feed.service'
 import { FeedPost } from '../models/post.interface'
 import { Observable } from 'rxjs'
@@ -17,8 +27,8 @@ export class FeedController {
   @Post(':orgId')
   create(
     @Param('orgId') orgId: number,
-    @Body() feedPost: FeedPost, 
-    @Request() req
+    @Body() feedPost: FeedPost,
+    @Request() req,
   ): Observable<FeedPost> {
     return this.feedService.createPost(req.user, feedPost)
   }

@@ -1,12 +1,16 @@
-import { CanActivate, ExecutionContext, Injectable, Logger } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { Observable } from 'rxjs';
-import { ROLES_KEY } from 'src/auth/decorators/roles/roles.decorator';
-import { ROLE } from 'src/auth/models/auth.interface';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  Logger,
+} from '@nestjs/common'
+import { Reflector } from '@nestjs/core'
+import { Observable } from 'rxjs'
+import { ROLES_KEY } from 'src/auth/decorators/roles/roles.decorator'
+import { ROLE } from 'src/auth/models/auth.interface'
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-
   constructor(private reflector: Reflector) {}
 
   canActivate(
@@ -14,10 +18,10 @@ export class RolesGuard implements CanActivate {
   ): boolean | Promise<boolean> | Observable<boolean> {
     const requiredRoles = this.reflector.getAllAndOverride<ROLE[]>(ROLES_KEY, [
       context.getHandler(),
-      context.getClass()
+      context.getClass(),
     ])
 
-    if(!requiredRoles) {
+    if (!requiredRoles) {
       return true
     }
 

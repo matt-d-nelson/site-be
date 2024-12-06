@@ -15,7 +15,7 @@ export class AuthController {
   @Post('login')
   login(@Body() user: AuthUser): Observable<{ token: string }> {
     return this.authService
-        .login(user)
-        .pipe(map((jwt: string) => ({ token: jwt })))
+      .login(user)
+      .pipe(map((jwt: string) => ({ token: jwt })))
   }
 }
