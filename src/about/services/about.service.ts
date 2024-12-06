@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { AboutEntity } from '../models/about.entity'
 import { DeleteResult, Repository } from 'typeorm'
-import { forkJoin, from, Observable, switchMap } from 'rxjs'
+import { forkJoin, from, Observable, of, switchMap } from 'rxjs'
 import { About } from '../models/about.interface'
 import { CloudinaryService } from 'src/cloudinary/services/cloudinary.service'
 import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary'
@@ -45,4 +45,23 @@ export class AboutService {
     const dbDelete$ = this.aboutRepository.delete(bioId)
     return forkJoin([imgDelete$, dbDelete$])
   }
+
+  patchBio(bioId: string, orgId: string, updateData: Partial<About>, newImageFile?: Express.Multer.File) {
+    const reqs$ = []
+    const aboutFolder = `monorepo/${orgId}/upload/about/`
+
+    const imageUpdate$ = newImageFile ? this.cloudinaryService.updateImage(newImageFile, updateData.imageId, aboutFolder) : of(null)
+
+    return imageUpdate$.pipe(
+        switchMap((cloudinaryRes) => {
+            const formattedUpdateData: any = {
+                ...(updateData.name !== undefined ? { name: updateData.name } : {}),
+                ...(updateData.biography !== undefined ? { biography: updateData.biography } : {}),
+                ...(updateData.isPrimary !== undefined ? { isPrimary: updateData.isPrimary === 'true'} : {}),
+                ...(cloudinaryRes ? { imageUrl: cloudinaryRes.secure_url } : {})
+            }
+            return from(this.aboutRepository.update(bioId, formattedUpdateData))
+        })
+    )
+    }
 }

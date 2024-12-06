@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { UploadApiErrorResponse, UploadApiResponse, v2 } from 'cloudinary'
+import { UploadApiErrorResponse, UploadApiOptions, UploadApiResponse, v2 } from 'cloudinary'
 import { from, Observable } from 'rxjs'
 import toStream = require('buffer-to-stream')
 
@@ -33,6 +33,34 @@ export class CloudinaryService {
             if(error) return reject(error)
             resolve(result)
           })
+        }
+      )
+    )
+  }
+
+  updateImage(
+    file: Express.Multer.File, 
+    publicId: string, 
+    folder: string
+  ): Observable<UploadApiResponse | UploadApiErrorResponse> {
+    return from(
+      new Promise<UploadApiResponse | UploadApiErrorResponse>(
+        (resolve, reject) => {
+          const uploadOptions: UploadApiOptions = {
+            folder: folder,
+            public_id: publicId, 
+            overwrite: true 
+          }
+
+          const upload = v2.uploader.upload_stream(
+            uploadOptions,
+            (error, result) => {
+              if (error) return reject(error)
+              resolve(result)
+            }
+          )
+
+          toStream(file.buffer).pipe(upload)
         }
       )
     )
