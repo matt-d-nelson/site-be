@@ -1,8 +1,8 @@
 import { AuthOrgEntity } from 'src/auth/models/auth.entity'
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 
-@Entity('about')
-export class AboutEntity {
+@Entity('events')
+export class EventsEntity {
   @PrimaryGeneratedColumn()
   id: number
 
@@ -10,17 +10,11 @@ export class AboutEntity {
   org: number
 
   @Column()
+  date: string
+
+  @Column()
   name: string
 
-  @Column('text')
-  biography: string
-
   @Column()
-  imageUrl: string
-
-  @Column()
-  imageId: string
-
-  @Column()
-  isPrimary: boolean
+  link: string
 }
