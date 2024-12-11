@@ -28,7 +28,7 @@ export class AboutService {
             ...aboutData,
             imageUrl: cloudinaryRes.secure_url,
             imageId: cloudinaryRes.public_id,
-            isPrimary: aboutData.isPrimary === 'true', // I'm not proud of this js bullshit
+            isPrimary: aboutData.isPrimary === 'true', //TODO: I'm not proud of this
             org: parseInt(orgId),
           }),
         )
