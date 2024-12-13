@@ -15,7 +15,7 @@ import { AboutService } from '../services/about.service'
 import { About } from '../models/about.interface'
 import { Observable } from 'rxjs'
 import { FileInterceptor } from '@nestjs/platform-express'
-import { DeleteResult } from 'typeorm'
+import { DeleteResult, UpdateResult } from 'typeorm'
 import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary'
 import { Roles } from 'src/auth/decorators/roles/roles.decorator'
 import { ROLE } from 'src/auth/models/auth.interface'
@@ -51,7 +51,6 @@ export class AboutController {
     @Query('imageId') imageId: string,
     @Query('bioId') bioId: string,
   ): Observable<[UploadApiResponse | UploadApiErrorResponse, DeleteResult]> {
-    console.log(orgId, imageId, bioId)
     return this.aboutService.deleteBio(bioId, imageId)
   }
 
@@ -64,7 +63,7 @@ export class AboutController {
     @Param('bioId') bioId: string,
     @Body() updatedBio: Partial<About>,
     @UploadedFile() file?: Express.Multer.File,
-  ) {
+  ): Observable<UpdateResult> {
     return this.aboutService.patchBio(bioId, orgId, updatedBio, file)
   }
 }

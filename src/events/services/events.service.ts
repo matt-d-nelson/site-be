@@ -28,4 +28,8 @@ export class EventsService {
   deleteEvent(eventId: string): Observable<DeleteResult> {
     return from(this.eventsRepository.delete(eventId))
   }
+
+  patchEvent(eventId: string, updateData: Partial<Event>) {
+    return from(this.eventsRepository.update(eventId, updateData))
+  }
 }
