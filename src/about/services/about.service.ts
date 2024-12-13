@@ -28,40 +28,58 @@ export class AboutService {
             ...aboutData,
             imageUrl: cloudinaryRes.secure_url,
             imageId: cloudinaryRes.public_id,
-            isPrimary: aboutData.isPrimary === 'true', // I'm not proud of this js bullshit
-            org: parseInt(orgId)
+            isPrimary: aboutData.isPrimary === 'true', //TODO: I'm not proud of this
+            org: parseInt(orgId),
           }),
         )
-      })
+      }),
     )
   }
 
   getBios(orgId: string): Observable<About[]> {
-    return from(this.aboutRepository.find({where: { org: parseInt(orgId) }}))
+    return from(this.aboutRepository.find({ where: { org: parseInt(orgId) } }))
   }
 
-  deleteBio(bioId: string, imageId: string): Observable<[UploadApiResponse | UploadApiErrorResponse, DeleteResult]> {
+  deleteBio(
+    bioId: string,
+    imageId: string,
+  ): Observable<[UploadApiResponse | UploadApiErrorResponse, DeleteResult]> {
     const imgDelete$ = this.cloudinaryService.deleteImage(imageId)
     const dbDelete$ = this.aboutRepository.delete(bioId)
     return forkJoin([imgDelete$, dbDelete$])
   }
 
-  patchBio(bioId: string, orgId: string, updateData: Partial<About>, newImageFile?: Express.Multer.File) {
+  patchBio(
+    bioId: string,
+    orgId: string,
+    updateData: Partial<About>,
+    newImageFile?: Express.Multer.File,
+  ) {
     const reqs$ = []
     const aboutFolder = `monorepo/${orgId}/upload/about/`
 
-    const imageUpdate$ = newImageFile ? this.cloudinaryService.updateImage(newImageFile, updateData.imageId, aboutFolder) : of(null)
+    const imageUpdate$ = newImageFile
+      ? this.cloudinaryService.updateImage(
+          newImageFile,
+          updateData.imageId,
+          aboutFolder,
+        )
+      : of(null)
 
     return imageUpdate$.pipe(
-        switchMap((cloudinaryRes) => {
-            const formattedUpdateData: any = {
-                ...(updateData.name !== undefined ? { name: updateData.name } : {}),
-                ...(updateData.biography !== undefined ? { biography: updateData.biography } : {}),
-                ...(updateData.isPrimary !== undefined ? { isPrimary: updateData.isPrimary === 'true'} : {}),
-                ...(cloudinaryRes ? { imageUrl: cloudinaryRes.secure_url } : {})
-            }
-            return from(this.aboutRepository.update(bioId, formattedUpdateData))
-        })
+      switchMap((cloudinaryRes) => {
+        const formattedUpdateData: any = {
+          ...(updateData.name !== undefined ? { name: updateData.name } : {}),
+          ...(updateData.biography !== undefined
+            ? { biography: updateData.biography }
+            : {}),
+          ...(updateData.isPrimary !== undefined
+            ? { isPrimary: updateData.isPrimary === 'true' }
+            : {}),
+          ...(cloudinaryRes ? { imageUrl: cloudinaryRes.secure_url } : {}),
+        }
+        return from(this.aboutRepository.update(bioId, formattedUpdateData))
+      }),
     )
-    }
+  }
 }

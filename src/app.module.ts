@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module'
 import { typeOrmAsyncConfig } from 'db/typeorm.config'
 import { AboutModule } from './about/about.module'
 import { CloudinaryModule } from './cloudinary/cloudinary.module'
+import { EventsModule } from './events/events.module'
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module'
     AuthModule,
     AboutModule,
     CloudinaryModule,
+    EventsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
