@@ -9,6 +9,7 @@ import { typeOrmAsyncConfig } from 'db/typeorm.config'
 import { AboutModule } from './about/about.module'
 import { CloudinaryModule } from './cloudinary/cloudinary.module'
 import { EventsModule } from './events/events.module'
+import { VideosModule } from './videos/videos.module'
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { EventsModule } from './events/events.module'
     AboutModule,
     CloudinaryModule,
     EventsModule,
+    VideosModule,
   ],
   controllers: [AppController],
   providers: [AppService],

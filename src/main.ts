@@ -8,7 +8,7 @@ async function bootstrap() {
     origin: [
       'http://localhost:4200',
       'https://preeminent-faloodeh-5c4aff.netlify.app',
-      'https://telestela.com'
+      'https://telestela.com',
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true,
