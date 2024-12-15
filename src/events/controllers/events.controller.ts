@@ -55,7 +55,6 @@ export class EventsController {
     @Param('eventId') eventId: string,
     @Body() updatedEvent: Partial<Event>,
   ): Observable<UpdateResult> {
-    console.log(eventId)
     return this.eventsService.patchEvent(eventId, updatedEvent)
   }
 }
