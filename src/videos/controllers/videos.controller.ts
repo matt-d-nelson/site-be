@@ -9,32 +9,32 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common'
-import { EventsService } from '../services/events.service'
-import { Event } from '../models/events.interface'
+import { Video } from '../models/videos.interface'
 import { Observable } from 'rxjs'
+import { VideosService } from '../services/videos.service'
 import { DeleteResult, UpdateResult } from 'typeorm'
 import { Roles } from 'src/auth/decorators/roles/roles.decorator'
 import { JwtGuard } from 'src/auth/guards/jwt/jwt.guard'
 import { RolesGuard } from 'src/auth/guards/roles/roles.guard'
 import { ROLE } from 'src/auth/models/auth.interface'
 
-@Controller('events')
-export class EventsController {
-  constructor(private eventsService: EventsService) {}
+@Controller('videos')
+export class VideosController {
+  constructor(private videosService: VideosService) {}
 
   @Roles(ROLE.ADMIN)
   @UseGuards(JwtGuard, RolesGuard)
   @Post(':orgId')
   create(
     @Param('orgId') orgId: string,
-    @Body() eventData: Event,
-  ): Observable<Event> {
-    return this.eventsService.createEvent(eventData, orgId)
+    @Body() videoData: Video,
+  ): Observable<Video> {
+    return this.videosService.createVideo(videoData, orgId)
   }
 
   @Get(':orgId')
   get(@Param('orgId') orgId: string) {
-    return this.eventsService.getEvents(orgId)
+    return this.videosService.getVideos(orgId)
   }
 
   @Roles(ROLE.ADMIN)
@@ -42,19 +42,19 @@ export class EventsController {
   @Delete(':orgId')
   delete(
     @Param('orgId') orgId: string,
-    @Query('eventId') eventId: string,
+    @Query('videoId') videoId: string,
   ): Observable<DeleteResult> {
-    return this.eventsService.deleteEvent(eventId)
+    return this.videosService.deleteVideo(videoId)
   }
 
   @Roles(ROLE.ADMIN)
   @UseGuards(JwtGuard, RolesGuard)
-  @Patch(':orgId/:eventId')
+  @Patch(':orgId/:videoId')
   patch(
     @Param('orgId') orgId: string,
-    @Param('eventId') eventId: string,
-    @Body() updatedEvent: Partial<Event>,
+    @Param('videoId') videoId: string,
+    @Body() updatedVideo: Partial<Video>,
   ): Observable<UpdateResult> {
-    return this.eventsService.patchEvent(eventId, updatedEvent)
+    return this.videosService.patchVideo(videoId, updatedVideo)
   }
 }

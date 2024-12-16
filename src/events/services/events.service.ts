@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { EventsEntity } from '../models/events.entity'
-import { DeleteResult, Repository } from 'typeorm'
+import { DeleteResult, Repository, UpdateResult } from 'typeorm'
 import { Event } from '../models/events.interface'
 import { from, Observable } from 'rxjs'
 
@@ -22,14 +22,22 @@ export class EventsService {
   }
 
   getEvents(orgId: string): Observable<Event[]> {
-    return from(this.eventsRepository.find({ where: { org: parseInt(orgId) } }))
+    return from(
+      this.eventsRepository.find({
+        where: { org: parseInt(orgId) },
+        order: { date: 'DESC' },
+      }),
+    )
   }
 
   deleteEvent(eventId: string): Observable<DeleteResult> {
     return from(this.eventsRepository.delete(eventId))
   }
 
-  patchEvent(eventId: string, updateData: Partial<Event>) {
+  patchEvent(
+    eventId: string,
+    updateData: Partial<Event>,
+  ): Observable<UpdateResult> {
     return from(this.eventsRepository.update(eventId, updateData))
   }
 }
