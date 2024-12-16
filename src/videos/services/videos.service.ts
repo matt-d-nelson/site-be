@@ -22,7 +22,12 @@ export class VideosService {
   }
 
   getVideos(orgId: string): Observable<Video[]> {
-    return from(this.videoRepository.find({ where: { org: parseInt(orgId) } }))
+    return from(
+      this.videoRepository.find({
+        where: { org: parseInt(orgId) },
+        order: { id: 'DESC' },
+      }),
+    )
   }
 
   deleteVideo(videoId: string): Observable<DeleteResult> {
