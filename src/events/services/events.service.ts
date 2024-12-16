@@ -22,7 +22,12 @@ export class EventsService {
   }
 
   getEvents(orgId: string): Observable<Event[]> {
-    return from(this.eventsRepository.find({ where: { org: parseInt(orgId) } }))
+    return from(
+      this.eventsRepository.find({
+        where: { org: parseInt(orgId) },
+        order: { date: 'DESC' },
+      }),
+    )
   }
 
   deleteEvent(eventId: string): Observable<DeleteResult> {
