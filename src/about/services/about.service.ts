@@ -21,7 +21,7 @@ export class AboutService {
     orgId: string,
   ): Observable<About> {
     const aboutFolder = `monorepo/${orgId}/upload/about/`
-    return this.cloudinaryService.uploadImage(file, aboutFolder).pipe(
+    return this.cloudinaryService.uploadResource(file, aboutFolder).pipe(
       switchMap((cloudinaryRes) => {
         return from(
           this.aboutRepository.save({
@@ -44,7 +44,7 @@ export class AboutService {
     bioId: string,
     imageId: string,
   ): Observable<[UploadApiResponse | UploadApiErrorResponse, DeleteResult]> {
-    const imgDelete$ = this.cloudinaryService.deleteImage(imageId)
+    const imgDelete$ = this.cloudinaryService.deleteResource(imageId)
     const dbDelete$ = this.aboutRepository.delete(bioId)
     return forkJoin([imgDelete$, dbDelete$])
   }
@@ -59,7 +59,7 @@ export class AboutService {
     const aboutFolder = `monorepo/${orgId}/upload/about/`
 
     const imageUpdate$ = newImageFile
-      ? this.cloudinaryService.updateImage(
+      ? this.cloudinaryService.updateResource(
           newImageFile,
           updateData.imageId,
           aboutFolder,

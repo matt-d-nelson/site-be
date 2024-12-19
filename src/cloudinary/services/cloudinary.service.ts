@@ -10,7 +10,7 @@ import toStream = require('buffer-to-stream')
 
 @Injectable()
 export class CloudinaryService {
-  uploadImage(
+  uploadResource(
     file: Express.Multer.File,
     folder: string,
   ): Observable<UploadApiResponse | UploadApiErrorResponse> {
@@ -18,7 +18,7 @@ export class CloudinaryService {
       new Promise<UploadApiResponse | UploadApiErrorResponse>(
         (resolve, reject) => {
           const upload = v2.uploader.upload_stream(
-            { folder: folder },
+            { folder: folder, resource_type: 'auto', },
             (error, result) => {
               if (error) return reject(error)
               resolve(result)
@@ -30,7 +30,7 @@ export class CloudinaryService {
     )
   }
 
-  deleteImage(
+  deleteResource(
     publicId: string,
   ): Observable<UploadApiResponse | UploadApiErrorResponse> {
     return from(
@@ -45,7 +45,7 @@ export class CloudinaryService {
     )
   }
 
-  updateImage(
+  updateResource(
     file: Express.Multer.File,
     publicId: string,
     folder: string,
