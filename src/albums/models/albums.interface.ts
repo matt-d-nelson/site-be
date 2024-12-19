@@ -1,17 +1,17 @@
 export interface Album {
   id: number
   isDraft: boolean
-  name: string
-  description: string
-  coverArtUrl: string
-  coverArtId: string
-  releaseDate: string
-  tracks: AlbumTrack[]
+  name: string | null
+  description: string | null
+  coverArtUrl: string | null
+  coverArtId: string | null
+  releaseDate: string | null
+  tracks: AlbumTrack[] | null
 }
 
 export interface AlbumTrack {
   id: number
-  albumId: number
+  album: Album
   name: string
   lyrics: string
   audioUrl: string
@@ -21,6 +21,6 @@ export interface AlbumTrack {
 
 export interface AlbumOwners {
   id: number
-  orgId: number
-  albumId: number
+  org: number
+  album: number
 }

@@ -13,22 +13,22 @@ export class AlbumEntity {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column()
+  @Column({default: true})
   isDraft: boolean
 
-  @Column()
+  @Column({nullable: true})
   name: string
 
-  @Column('text')
+  @Column('text', {nullable: true})
   description: string
 
-  @Column()
+  @Column({nullable: true})
   coverArtUrl: string
 
-  @Column()
+  @Column({ nullable: true})
   coverArtId: string
 
-  @Column()
+  @Column({ nullable: true})
   releaseDate: string
 
   @OneToMany(() => AlbumTrack, (track) => track.album)
