@@ -18,7 +18,7 @@ export class CloudinaryService {
       new Promise<UploadApiResponse | UploadApiErrorResponse>(
         (resolve, reject) => {
           const upload = v2.uploader.upload_stream(
-            { folder: folder, resource_type: 'auto', },
+            { folder: folder, resource_type: 'auto' },
             (error, result) => {
               if (error) return reject(error)
               resolve(result)
