@@ -13,22 +13,22 @@ export class AlbumEntity {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({default: true})
+  @Column({ default: true })
   isDraft: boolean
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   name: string
 
-  @Column('text', {nullable: true})
+  @Column('text', { nullable: true })
   description: string
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   coverArtUrl: string
 
-  @Column({ nullable: true})
+  @Column({ nullable: true })
   coverArtId: string
 
-  @Column({ nullable: true})
+  @Column({ nullable: true })
   releaseDate: string
 
   @OneToMany(() => AlbumTrack, (track) => track.album)
@@ -45,7 +45,7 @@ export class AlbumOwners {
   org: AuthOrgEntity
 
   @ManyToOne(() => AlbumEntity, (albumEntity) => albumEntity.id, {
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'albumId' })
   album: AlbumEntity
