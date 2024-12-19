@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { AlbumEntity, AlbumOwners, AlbumTrack } from '../models/albums.entity'
-import { Repository } from 'typeorm'
+import { Repository, UpdateResult } from 'typeorm'
 import { from, Observable, of, switchMap } from 'rxjs'
 import { Album } from '../models/albums.interface'
+import { CloudinaryService } from 'src/cloudinary/services/cloudinary.service'
 
 @Injectable()
 export class AlbumsService {
@@ -13,7 +14,8 @@ export class AlbumsService {
         @InjectRepository(AlbumOwners)
         private readonly albumOwnersRepository: Repository<AlbumOwners>,
         @InjectRepository(AlbumTrack)
-        private readonly albumTrackRepository: Repository<AlbumTrack>
+        private readonly albumTrackRepository: Repository<AlbumTrack>,
+        private cloudinaryService: CloudinaryService
     ) {}
 
     createAlbumDraft(orgId: string): Observable<Album> {
@@ -31,14 +33,28 @@ export class AlbumsService {
         )
     }
 
-    createAlbumTrack() {}
+    publishAlbumDraft(orgId: string, albumId: string, albumData: Album, imgFile: Express.Multer.File): Observable<UpdateResult> {
+        const albumFolder = `monorepo/${orgId}/upload/albums/images/`
 
-    updateAlbum() {}
+        return this.cloudinaryService.uploadResource(imgFile, albumFolder).pipe(
+            switchMap((cloudinaryRes) => {
+                return from(
+                    this.albumRepository.update(albumId, {
+                        ...albumData,
+                        coverArtUrl: cloudinaryRes.secure_url,
+                        coverArtId: cloudinaryRes.public_id,
+                        isDraft: false
+                    })
+                )
+            })
+        )
+    }
 
     deleteAlbum() {}
 
+    createAlbumTrack() {}
+
     deleteTrack() {}
 
-    publishAlbum() {}
 
 }

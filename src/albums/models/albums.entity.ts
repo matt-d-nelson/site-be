@@ -44,7 +44,9 @@ export class AlbumOwners {
   @JoinColumn({ name: 'orgId' })
   org: AuthOrgEntity
 
-  @ManyToOne(() => AlbumEntity, (albumEntity) => albumEntity.id)
+  @ManyToOne(() => AlbumEntity, (albumEntity) => albumEntity.id, {
+    onDelete: 'CASCADE'
+  })
   @JoinColumn({ name: 'albumId' })
   album: AlbumEntity
 }
