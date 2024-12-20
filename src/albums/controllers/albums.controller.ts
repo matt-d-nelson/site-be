@@ -48,17 +48,17 @@ export class AlbumsController {
     @Param('orgId') orgId: string,
     @Query('albumId') albumId: string,
     @Query('imageId') imageId: string,
-  ): Observable<[UploadApiResponse | UploadApiErrorResponse, DeleteResult]> {
+  ): Observable<[DeleteResult]> {
     return this.albumsService.deleteAlbum(albumId, imageId)
   }
 
   //------------------- Tracks -------------------//
-  @Get('track/:albumId')
+  @Get('tracks/:albumId')
   getAlbumTracks(@Param(':albumId') albumId: string): Observable<AlbumTrack[]> {
     return this.albumsService.getAlbumTracks(albumId)
   }
 
-  @Post('track/:orgId/:albumId')
+  @Post('tracks/:orgId/:albumId')
   @UseInterceptors(FileInterceptor('audio'))
   createTrack(
     @Param('orgId') orgId: string,
@@ -69,7 +69,7 @@ export class AlbumsController {
     return this.albumsService.createAlbumTrack(orgId, albumId, trackData, file)
   }
 
-  @Delete('track/:orgId')
+  @Delete('tracks/:orgId')
   deleteTrack(
     @Param('orgId') orgId: string,
     @Query('trackId') trackId: string,

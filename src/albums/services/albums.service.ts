@@ -69,11 +69,17 @@ export class AlbumsService {
 
   deleteAlbum(
     albumId: string,
-    imageId: string,
-  ): Observable<[UploadApiResponse | UploadApiErrorResponse, DeleteResult]> {
-    const imgDelete$ = this.cloudinaryService.deleteResource(imageId)
+    imageId: string | null,
+  ): Observable<[DeleteResult]> {
+    console.log(imageId)
+    const reqs$ = []
+    if(imageId !== '') {
+        const imgDelete$ = this.cloudinaryService.deleteResource(imageId)
+        reqs$.push(imgDelete$)
+    }
     const dbDelete$ = this.albumRepository.delete(albumId)
-    return forkJoin([imgDelete$, dbDelete$])
+    reqs$.push(dbDelete$)
+    return forkJoin(reqs$)
   }
 
   getAlbumTracks(albumId: string): Observable<AlbumTrack[]> {
