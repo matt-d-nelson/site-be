@@ -67,19 +67,29 @@ export class AlbumsService {
     )
   }
 
-  deleteAlbum(
-    albumId: string,
-    imageId: string | null,
-  ): Observable<[DeleteResult]> {
-    console.log(imageId)
-    const reqs$ = []
-    if(imageId !== '') {
-        const imgDelete$ = this.cloudinaryService.deleteResource(imageId)
-        reqs$.push(imgDelete$)
-    }
-    const dbDelete$ = this.albumRepository.delete(albumId)
-    reqs$.push(dbDelete$)
-    return forkJoin(reqs$)
+  deleteAlbum(albumId: string, imageId: string | null): Observable<any[]> {
+    return from(this.getAlbumTracks(albumId)).pipe(
+      switchMap((tracks) => {
+        const deleteOperations$: Observable<any>[] = []
+
+        if (imageId !== '') {
+          const imgDelete$ = this.cloudinaryService.deleteResource(imageId)
+          deleteOperations$.push(imgDelete$)
+        }
+
+        tracks.forEach((track) => {
+          if (track?.audioId) {
+            deleteOperations$.push(
+              this.cloudinaryService.deleteResource(track.audioId),
+            )
+          }
+        })
+
+        deleteOperations$.push(from(this.albumRepository.delete(albumId)))
+        console.log('LOOK HERE', deleteOperations$)
+        return forkJoin(deleteOperations$)
+      }),
+    )
   }
 
   getAlbumTracks(albumId: string): Observable<AlbumTrack[]> {

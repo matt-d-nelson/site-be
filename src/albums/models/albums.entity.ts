@@ -65,7 +65,7 @@ export class AlbumTrack {
   @Column()
   name: string
 
-  @Column('text')
+  @Column('text', { nullable: true })
   lyrics: string
 
   @Column()

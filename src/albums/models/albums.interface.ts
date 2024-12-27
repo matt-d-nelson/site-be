@@ -16,7 +16,7 @@ export interface AlbumTrack {
   lyrics: string
   audioUrl: string
   audioId: string
-  trackPlacement: number //0 indexed
+  trackPlacement: number
 }
 
 export interface AlbumOwners {

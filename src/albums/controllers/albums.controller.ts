@@ -48,13 +48,13 @@ export class AlbumsController {
     @Param('orgId') orgId: string,
     @Query('albumId') albumId: string,
     @Query('imageId') imageId: string,
-  ): Observable<[DeleteResult]> {
+  ): Observable<any[]> {
     return this.albumsService.deleteAlbum(albumId, imageId)
   }
 
   //------------------- Tracks -------------------//
   @Get('tracks/:albumId')
-  getAlbumTracks(@Param(':albumId') albumId: string): Observable<AlbumTrack[]> {
+  getAlbumTracks(@Param('albumId') albumId: string): Observable<AlbumTrack[]> {
     return this.albumsService.getAlbumTracks(albumId)
   }
 
