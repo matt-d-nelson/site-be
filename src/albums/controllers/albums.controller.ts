@@ -40,6 +40,7 @@ export class AlbumsController {
     @Body() albumData: Album,
     @UploadedFile() file: Express.Multer.File,
   ): Observable<UpdateResult> {
+    console.log(file)
     return this.albumsService.publishAlbumDraft(orgId, albumId, albumData, file)
   }
 
@@ -49,7 +50,7 @@ export class AlbumsController {
     @Query('albumId') albumId: string,
     @Query('imageId') imageId: string,
   ): Observable<any[]> {
-    return this.albumsService.deleteAlbum(albumId, imageId)
+    return this.albumsService.deleteAlbum(orgId, albumId, imageId)
   }
 
   //------------------- Tracks -------------------//

@@ -30,18 +30,35 @@ export class CloudinaryService {
     )
   }
 
+  // use type video for audio
   deleteResource(
     publicId: string,
+    type: 'image' | 'video',
   ): Observable<UploadApiResponse | UploadApiErrorResponse> {
     return from(
       new Promise<UploadApiResponse | UploadApiErrorResponse>(
         (resolve, reject) => {
-          v2.uploader.destroy(publicId, (error, result) => {
-            if (error) return reject(error)
-            resolve(result)
-          })
+          v2.uploader.destroy(
+            publicId,
+            { resource_type: type },
+            (error, result) => {
+              if (error) return reject(error)
+              resolve(result)
+            },
+          )
         },
       ),
+    )
+  }
+
+  deleteFolder(folderPath: string) {
+    return from(
+      new Promise((resolve, reject) => {
+        v2.api.delete_folder(folderPath, (error, result) => {
+          if (error) return reject(error)
+          resolve(result)
+        })
+      }),
     )
   }
 

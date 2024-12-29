@@ -44,7 +44,7 @@ export class AboutService {
     bioId: string,
     imageId: string,
   ): Observable<[UploadApiResponse | UploadApiErrorResponse, DeleteResult]> {
-    const imgDelete$ = this.cloudinaryService.deleteResource(imageId)
+    const imgDelete$ = this.cloudinaryService.deleteResource(imageId, 'image')
     const dbDelete$ = this.aboutRepository.delete(bioId)
     return forkJoin([imgDelete$, dbDelete$])
   }

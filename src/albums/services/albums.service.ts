@@ -67,26 +67,41 @@ export class AlbumsService {
     )
   }
 
-  deleteAlbum(albumId: string, imageId: string | null): Observable<any[]> {
+  deleteAlbum(
+    orgId: string,
+    albumId: string,
+    imageId: string | null,
+  ): Observable<any[]> {
     return from(this.getAlbumTracks(albumId)).pipe(
       switchMap((tracks) => {
         const deleteOperations$: Observable<any>[] = []
-
+        // delete cover img
         if (imageId !== '') {
-          const imgDelete$ = this.cloudinaryService.deleteResource(imageId)
+          const imgDelete$ = this.cloudinaryService.deleteResource(
+            imageId,
+            'image',
+          )
           deleteOperations$.push(imgDelete$)
         }
-
+        // delete tracks
         tracks.forEach((track) => {
           if (track?.audioId) {
             deleteOperations$.push(
-              this.cloudinaryService.deleteResource(track.audioId),
+              this.cloudinaryService.deleteResource(track.audioId, 'video'),
             )
           }
         })
-
+        // delete folders
+        const folders = [
+          `monorepo/${orgId}/upload/albums/${albumId}/images/`,
+          `monorepo/${orgId}/upload/albums/${albumId}/audio/`,
+          `monorepo/${orgId}/upload/albums/${albumId}/`,
+        ]
+        folders.forEach((folder) => {
+          deleteOperations$.push(this.cloudinaryService.deleteFolder(folder))
+        })
+        // delete db instance
         deleteOperations$.push(from(this.albumRepository.delete(albumId)))
-        console.log('LOOK HERE', deleteOperations$)
         return forkJoin(deleteOperations$)
       }),
     )
@@ -127,7 +142,7 @@ export class AlbumsService {
     trackId: string,
     audioId: string,
   ): Observable<[UploadApiResponse | UploadApiErrorResponse, DeleteResult]> {
-    const audioDelete$ = this.cloudinaryService.deleteResource(audioId)
+    const audioDelete$ = this.cloudinaryService.deleteResource(audioId, 'video')
     const trackDelete$ = this.albumTrackRepository.delete(trackId)
     return forkJoin([audioDelete$, trackDelete$])
   }
