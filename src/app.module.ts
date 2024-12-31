@@ -10,6 +10,7 @@ import { AboutModule } from './about/about.module'
 import { CloudinaryModule } from './cloudinary/cloudinary.module'
 import { EventsModule } from './events/events.module'
 import { VideosModule } from './videos/videos.module'
+import { AlbumsModule } from './albums/albums.module'
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { VideosModule } from './videos/videos.module'
     CloudinaryModule,
     EventsModule,
     VideosModule,
+    AlbumsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
