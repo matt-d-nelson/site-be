@@ -2,7 +2,17 @@ import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { AlbumEntity, AlbumOwners, AlbumTrack } from '../models/albums.entity'
 import { DeleteResult, Repository, UpdateResult } from 'typeorm'
-import { forkJoin, from, map, Observable, of, switchMap } from 'rxjs'
+import {
+  catchError,
+  concatMap,
+  forkJoin,
+  from,
+  map,
+  Observable,
+  of,
+  switchMap,
+  toArray,
+} from 'rxjs'
 import { Album } from '../models/albums.interface'
 import { CloudinaryService } from 'src/cloudinary/services/cloudinary.service'
 import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary'
@@ -67,52 +77,77 @@ export class AlbumsService {
     )
   }
 
-  deleteAlbum(
-    orgId: string,
-    albumId: string,
-    imageId: string | null,
-  ): Observable<any[]> {
+  deleteAlbum(orgId: string, albumId: string, imageId: string | null): any {
     return from(this.getAlbumTracks(albumId)).pipe(
       switchMap((tracks) => {
-        const deleteOperations$: Observable<any>[] = []
+        const deleteFolders: string[] = []
+        const deleteResources$: Observable<any>[] = []
         // delete cover img
         if (imageId !== '') {
+          deleteFolders.push(
+            `monorepo/${orgId}/upload/albums/${albumId}/images/`,
+          )
           const imgDelete$ = this.cloudinaryService.deleteResource(
             imageId,
             'image',
           )
-          deleteOperations$.push(imgDelete$)
+          deleteResources$.push(imgDelete$)
         }
         // delete tracks
-        tracks.forEach((track) => {
-          if (track?.audioId) {
-            deleteOperations$.push(
-              this.cloudinaryService.deleteResource(track.audioId, 'video'),
-            )
-          }
-        })
-        // delete folders
-        const folders = [
-          `monorepo/${orgId}/upload/albums/${albumId}/images/`,
-          `monorepo/${orgId}/upload/albums/${albumId}/audio/`,
-          `monorepo/${orgId}/upload/albums/${albumId}/`,
-        ]
-        folders.forEach((folder) => {
-          deleteOperations$.push(this.cloudinaryService.deleteFolder(folder))
-        })
-        // delete db instance
-        deleteOperations$.push(from(this.albumRepository.delete(albumId)))
-        return forkJoin(deleteOperations$)
+        if (tracks.length > 0) {
+          deleteFolders.push(
+            `monorepo/${orgId}/upload/albums/${albumId}/audio/`,
+          )
+          tracks.forEach((track) => {
+            if (track?.audioId) {
+              deleteResources$.push(
+                this.cloudinaryService.deleteResource(track.audioId, 'video'),
+              )
+            }
+          })
+        }
+        if (deleteFolders.length > 0) {
+          deleteFolders.push(`monorepo/${orgId}/upload/albums/${albumId}/`)
+        }
+        // delete db instance / tracks cascade
+        deleteResources$.push(from(this.albumRepository.delete(albumId)))
+        return this.executeAlbumDelete(deleteResources$, deleteFolders)
       }),
+    )
+  }
+
+  private executeAlbumDelete(
+    deleteResources: Observable<any>[],
+    folders: string[],
+  ) {
+    return forkJoin(deleteResources).pipe(
+      switchMap(() => this.deleteAlbumFolders(folders)),
+    )
+  }
+
+  private deleteAlbumFolders(folders: string[]): Observable<any> {
+    return from(folders).pipe(
+      // ensure folders are deleted in order
+      concatMap((folder) =>
+        this.cloudinaryService.deleteFolder(folder).pipe(
+          catchError((error) => {
+            console.warn(`Failed to delete folder: ${folder}`, error)
+            return of(null)
+          }),
+        ),
+      ),
+      toArray(),
     )
   }
 
   getAlbumTracks(albumId: string): Observable<AlbumTrack[]> {
     return from(
-      this.albumTrackRepository.find({
-        where: { album: { id: parseInt(albumId) } },
-        order: { trackPlacement: 'ASC' },
-      }),
+      this.albumTrackRepository
+        .find({
+          where: { album: { id: parseInt(albumId) } },
+          order: { trackPlacement: 'ASC' },
+        })
+        .then((tracks) => tracks || []),
     )
   }
 
