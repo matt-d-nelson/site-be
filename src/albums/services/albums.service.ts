@@ -36,8 +36,11 @@ export class AlbumsService {
         relations: ['album', 'album.tracks'],
         order: {
           album: {
-            releaseDate: 'DESC'
-          }
+            releaseDate: 'DESC',
+            tracks: {
+              trackPlacement: 'ASC'
+            }
+          },
         }
       }),
     ).pipe(map((albumOwners) => albumOwners.map((owner) => owner.album)))
