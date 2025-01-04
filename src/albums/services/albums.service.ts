@@ -34,6 +34,11 @@ export class AlbumsService {
       this.albumOwnersRepository.find({
         where: { org: { id: parseInt(orgId) } },
         relations: ['album', 'album.tracks'],
+        order: {
+          album: {
+            releaseDate: 'ASC'
+          }
+        }
       }),
     ).pipe(map((albumOwners) => albumOwners.map((owner) => owner.album)))
   }
