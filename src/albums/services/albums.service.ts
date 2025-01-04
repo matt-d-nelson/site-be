@@ -36,7 +36,7 @@ export class AlbumsService {
         relations: ['album', 'album.tracks'],
         order: {
           album: {
-            releaseDate: 'ASC'
+            releaseDate: 'DESC'
           }
         }
       }),
