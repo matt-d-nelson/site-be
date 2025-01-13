@@ -86,7 +86,6 @@ export class AlbumsController {
   @UseGuards(JwtGuard, RolesGuard)
   @Delete('tracks/:orgId')
   deleteTrack(
-    @Param('orgId') orgId: string,
     @Query('trackId') trackId: string,
     @Query('audioId') audioId: string,
   ): Observable<[UploadApiResponse | UploadApiErrorResponse, DeleteResult]> {

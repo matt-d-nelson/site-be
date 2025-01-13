@@ -7,6 +7,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:4200',
+      'http://localhost:4300',
       'https://preeminent-faloodeh-5c4aff.netlify.app',
       'https://telestela.com',
     ],

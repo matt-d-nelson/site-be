@@ -38,10 +38,10 @@ export class AlbumsService {
           album: {
             releaseDate: 'DESC',
             tracks: {
-              trackPlacement: 'ASC'
-            }
+              trackPlacement: 'ASC',
+            },
           },
-        }
+        },
       }),
     ).pipe(map((albumOwners) => albumOwners.map((owner) => owner.album)))
   }

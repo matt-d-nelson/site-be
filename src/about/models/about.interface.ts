@@ -1,6 +1,6 @@
 export interface About {
   id: number
-  org: number
+  orgId: number
   name: string
   biography: string
   imageUrl: string

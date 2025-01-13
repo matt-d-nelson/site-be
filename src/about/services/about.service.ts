@@ -28,8 +28,8 @@ export class AboutService {
             ...aboutData,
             imageUrl: cloudinaryRes.secure_url,
             imageId: cloudinaryRes.public_id,
-            isPrimary: aboutData.isPrimary === 'true', //TODO: I'm not proud of this
-            org: parseInt(orgId),
+            isPrimary: aboutData.isPrimary === 'true',
+            orgId: parseInt(orgId),
           }),
         )
       }),
@@ -37,7 +37,11 @@ export class AboutService {
   }
 
   getBios(orgId: string): Observable<About[]> {
-    return from(this.aboutRepository.find({ where: { org: parseInt(orgId) } }))
+    return from(
+      this.aboutRepository.find({
+        where: { orgId: parseInt(orgId) },
+      }),
+    )
   }
 
   deleteBio(
@@ -55,7 +59,6 @@ export class AboutService {
     updateData: Partial<About>,
     newImageFile?: Express.Multer.File,
   ) {
-    const reqs$ = []
     const aboutFolder = `monorepo/${orgId}/upload/about/`
 
     const imageUpdate$ = newImageFile

@@ -16,7 +16,7 @@ export class VideosService {
     return from(
       this.videoRepository.save({
         ...videoData,
-        org: parseInt(orgId),
+        orId: parseInt(orgId),
       }),
     )
   }
@@ -24,7 +24,7 @@ export class VideosService {
   getVideos(orgId: string): Observable<Video[]> {
     return from(
       this.videoRepository.find({
-        where: { org: parseInt(orgId) },
+        where: { orgId: parseInt(orgId) },
         order: { id: 'DESC' },
       }),
     )

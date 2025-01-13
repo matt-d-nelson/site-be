@@ -1,6 +1,6 @@
 export interface Video {
   id: number
-  org: number
+  orgId: number
   name: string
   description: string
   link: string

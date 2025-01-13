@@ -1,12 +1,22 @@
 import { AuthOrgEntity } from 'src/auth/models/auth.entity'
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm'
 
 @Entity('videos')
 export class VideoEntity {
   @PrimaryGeneratedColumn()
   id: number
 
-  @ManyToOne(() => AuthOrgEntity, (authOrgEntity) => authOrgEntity.id)
+  @Column()
+  orgId: number
+
+  @ManyToOne(() => AuthOrgEntity)
+  @JoinColumn({ name: 'orgId' })
   org: number
 
   @Column()
