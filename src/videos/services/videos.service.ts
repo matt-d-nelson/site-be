@@ -16,7 +16,7 @@ export class VideosService {
     return from(
       this.videoRepository.save({
         ...videoData,
-        orId: parseInt(orgId),
+        orgId: parseInt(orgId),
       }),
     )
   }
