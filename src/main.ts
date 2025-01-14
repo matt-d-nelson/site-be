@@ -10,6 +10,8 @@ async function bootstrap() {
       'http://localhost:4300',
       'https://preeminent-faloodeh-5c4aff.netlify.app',
       'https://telestela.com',
+      'https://matt-dav-nelson.netlify.app',
+      'https://matt-dav-nelson.com',
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true,
