@@ -3,11 +3,7 @@ import { JwtService } from '@nestjs/jwt'
 import { InjectRepository } from '@nestjs/typeorm'
 import * as bcrypt from 'bcrypt'
 import { from, map, Observable, switchMap } from 'rxjs'
-import {
-  AuthOrgEntity,
-  AuthOrgRoleEntity,
-  AuthUserEntity,
-} from 'src/auth/models/auth.entity'
+import { AuthOrgRoleEntity, AuthUserEntity } from 'src/auth/models/auth.entity'
 import { AuthUser, AuthUserWithRoles } from 'src/auth/models/auth.interface'
 import { Repository } from 'typeorm'
 
