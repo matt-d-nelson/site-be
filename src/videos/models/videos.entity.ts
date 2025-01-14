@@ -17,7 +17,7 @@ export class VideoEntity {
 
   @ManyToOne(() => AuthOrgEntity)
   @JoinColumn({ name: 'orgId' })
-  org: number
+  org: AuthOrgEntity
 
   @Column()
   name: string
