@@ -10,6 +10,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module'
 import { EventsModule } from './events/events.module'
 import { VideosModule } from './videos/videos.module'
 import { AlbumsModule } from './albums/albums.module'
+import { CodeProjectsModule } from './code-projects/code-projects.module'
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { AlbumsModule } from './albums/albums.module'
     EventsModule,
     VideosModule,
     AlbumsModule,
+    CodeProjectsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,6 +1,6 @@
 export interface Event {
   id: number
-  org: number
+  orgId: number
   date: string
   name: string
   link: string
