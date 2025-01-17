@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm'
 
-@Entity('codeProject')
+@Entity('code-project')
 export class CodeProjectEntity {
   @PrimaryGeneratedColumn()
   id: number
