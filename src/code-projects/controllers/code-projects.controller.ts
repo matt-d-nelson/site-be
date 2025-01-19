@@ -53,9 +53,9 @@ export class CodeProjectsController {
   delete(
     @Param('orgId') orgId: string,
     @Query('imageId') imageId: string,
-    @Query('codeProjId') codeProjId: string,
+    @Query('projId') projId: string,
   ): Observable<[UploadApiResponse | UploadApiErrorResponse, DeleteResult]> {
-    return this.codeProjectsService.deleteCodeProject(codeProjId, imageId)
+    return this.codeProjectsService.deleteCodeProject(projId, imageId)
   }
 
   @Roles(ROLE.ADMIN)
