@@ -18,7 +18,11 @@ export class CloudinaryService {
       new Promise<UploadApiResponse | UploadApiErrorResponse>(
         (resolve, reject) => {
           const upload = v2.uploader.upload_stream(
-            { folder: folder, resource_type: 'auto' },
+            {
+              folder: folder,
+              resource_type: 'auto',
+              ...this.getMimeType(file),
+            },
             (error, result) => {
               if (error) return reject(error)
               resolve(result)
@@ -65,15 +69,14 @@ export class CloudinaryService {
   updateResource(
     file: Express.Multer.File,
     publicId: string,
-    folder: string,
   ): Observable<UploadApiResponse | UploadApiErrorResponse> {
     return from(
       new Promise<UploadApiResponse | UploadApiErrorResponse>(
         (resolve, reject) => {
           const uploadOptions: UploadApiOptions = {
-            folder: folder,
             public_id: publicId,
             overwrite: true,
+            ...this.getMimeType(file),
           }
 
           const upload = v2.uploader.upload_stream(
@@ -88,5 +91,28 @@ export class CloudinaryService {
         },
       ),
     )
+  }
+
+  private getMimeType(file: Express.Multer.File): {
+    format: string
+    flags?: string
+  } {
+    const mimeType = file.mimetype
+    console.log(mimeType)
+
+    switch (mimeType) {
+      case 'image/gif':
+        return { format: 'gif', flags: 'animated' }
+      case 'image/jpeg':
+        return { format: 'jpg' }
+      case 'image/png':
+        return { format: 'png' }
+      case 'audio/mpeg':
+        return { format: 'mp3' }
+      case 'audio/wav':
+        return { format: 'wav' }
+      default:
+        return { format: mimeType.split('/')[1] }
+    }
   }
 }

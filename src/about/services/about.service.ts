@@ -59,14 +59,8 @@ export class AboutService {
     updateData: Partial<About>,
     newImageFile?: Express.Multer.File,
   ) {
-    const aboutFolder = `monorepo/${orgId}/upload/about/`
-
     const imageUpdate$ = newImageFile
-      ? this.cloudinaryService.updateResource(
-          newImageFile,
-          updateData.imageId,
-          aboutFolder,
-        )
+      ? this.cloudinaryService.updateResource(newImageFile, updateData.imageId)
       : of(null)
 
     return imageUpdate$.pipe(

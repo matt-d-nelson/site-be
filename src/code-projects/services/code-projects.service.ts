@@ -62,14 +62,8 @@ export class CodeProjectsService {
     updateData: Partial<CodeProject>,
     newImageFile?: Express.Multer.File,
   ) {
-    const codeFolder = `monorepo/${orgId}/upload/codeProjects/`
-
     const imageUpdate$ = newImageFile
-      ? this.cloudinaryService.updateResource(
-          newImageFile,
-          updateData.imageId,
-          codeFolder,
-        )
+      ? this.cloudinaryService.updateResource(newImageFile, updateData.imageId)
       : of(null)
 
     return imageUpdate$.pipe(
