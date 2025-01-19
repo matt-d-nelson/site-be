@@ -7,15 +7,15 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm'
 
-@Entity('events')
-export class EventsEntity {
+@Entity('code-project')
+export class CodeProjectEntity {
   @PrimaryGeneratedColumn()
   id: number
 
   @Column()
   orgId: number
 
-  @ManyToOne(() => AuthOrgEntity, (authOrgEntity) => authOrgEntity.id)
+  @ManyToOne(() => AuthOrgEntity)
   @JoinColumn({ name: 'orgId' })
   org: AuthOrgEntity
 
@@ -25,6 +25,18 @@ export class EventsEntity {
   @Column()
   name: string
 
+  @Column({ nullable: true })
+  description: string
+
   @Column()
+  repo: string
+
+  @Column({ nullable: true })
   link: string
+
+  @Column()
+  imageId: string
+
+  @Column()
+  imageUrl: string
 }

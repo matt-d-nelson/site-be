@@ -1,34 +1,34 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { AboutEntity } from '../models/about.entity'
+import { CodeProjectEntity } from '../models/codeProject.entity'
 import { DeleteResult, Repository } from 'typeorm'
-import { forkJoin, from, Observable, of, switchMap } from 'rxjs'
-import { About } from '../models/about.interface'
 import { CloudinaryService } from 'src/cloudinary/services/cloudinary.service'
+import { CodeProject } from '../models/codeProject.interface'
+import { Observable, switchMap, from, of, forkJoin } from 'rxjs'
 import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary'
 
 @Injectable()
-export class AboutService {
+export class CodeProjectsService {
   constructor(
-    @InjectRepository(AboutEntity)
-    private readonly aboutRepository: Repository<AboutEntity>,
+    @InjectRepository(CodeProjectEntity)
+    private readonly codeProjectRepository: Repository<CodeProjectEntity>,
     private cloudinaryService: CloudinaryService,
   ) {}
 
-  createBio(
-    aboutData: About,
+  createCodeProject(
+    codeProjectData: CodeProject,
     file: Express.Multer.File,
     orgId: string,
-  ): Observable<About> {
-    const aboutFolder = `monorepo/${orgId}/upload/about/`
-    return this.cloudinaryService.uploadResource(file, aboutFolder).pipe(
+  ): Observable<CodeProject> {
+    const codeFolder = `monorepo/${orgId}/upload/codeProjects/`
+
+    return this.cloudinaryService.uploadResource(file, codeFolder).pipe(
       switchMap((cloudinaryRes) => {
         return from(
-          this.aboutRepository.save({
-            ...aboutData,
+          this.codeProjectRepository.save({
+            ...codeProjectData,
             imageUrl: cloudinaryRes.secure_url,
             imageId: cloudinaryRes.public_id,
-            isPrimary: aboutData.isPrimary === 'true',
             orgId: parseInt(orgId),
           }),
         )
@@ -36,27 +36,30 @@ export class AboutService {
     )
   }
 
-  getBios(orgId: string): Observable<About[]> {
+  getCodeProjects(orgId: string): Observable<CodeProject[]> {
     return from(
-      this.aboutRepository.find({
+      this.codeProjectRepository.find({
         where: { orgId: parseInt(orgId) },
+        order: {
+          date: 'DESC',
+        },
       }),
     )
   }
 
-  deleteBio(
-    bioId: string,
+  deleteCodeProject(
+    projId: string,
     imageId: string,
   ): Observable<[UploadApiResponse | UploadApiErrorResponse, DeleteResult]> {
     const imgDelete$ = this.cloudinaryService.deleteResource(imageId, 'image')
-    const dbDelete$ = this.aboutRepository.delete(bioId)
+    const dbDelete$ = this.codeProjectRepository.delete(projId)
     return forkJoin([imgDelete$, dbDelete$])
   }
 
-  patchBio(
-    bioId: string,
+  patchCodeProject(
+    projId: string,
     orgId: string,
-    updateData: Partial<About>,
+    updateData: Partial<CodeProject>,
     newImageFile?: Express.Multer.File,
   ) {
     const imageUpdate$ = newImageFile
@@ -67,15 +70,18 @@ export class AboutService {
       switchMap((cloudinaryRes) => {
         const formattedUpdateData: any = {
           ...(updateData.name !== undefined ? { name: updateData.name } : {}),
-          ...(updateData.biography !== undefined
-            ? { biography: updateData.biography }
+          ...(updateData.date !== undefined ? { date: updateData.date } : {}),
+          ...(updateData.description !== undefined
+            ? { description: updateData.description }
             : {}),
-          ...(updateData.isPrimary !== undefined
-            ? { isPrimary: updateData.isPrimary === 'true' }
-            : {}),
+          ...(updateData.repo !== undefined ? { repo: updateData.repo } : {}),
+          ...(updateData.link !== undefined ? { link: updateData.link } : {}),
           ...(cloudinaryRes ? { imageUrl: cloudinaryRes.secure_url } : {}),
         }
-        return from(this.aboutRepository.update(bioId, formattedUpdateData))
+
+        return from(
+          this.codeProjectRepository.update(projId, formattedUpdateData),
+        )
       }),
     )
   }

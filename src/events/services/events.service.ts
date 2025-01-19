@@ -16,7 +16,7 @@ export class EventsService {
     return from(
       this.eventsRepository.save({
         ...eventData,
-        org: parseInt(orgId),
+        orgId: parseInt(orgId),
       }),
     )
   }
@@ -24,7 +24,7 @@ export class EventsService {
   getEvents(orgId: string): Observable<Event[]> {
     return from(
       this.eventsRepository.find({
-        where: { org: parseInt(orgId) },
+        where: { orgId: parseInt(orgId) },
         order: { date: 'DESC' },
       }),
     )
