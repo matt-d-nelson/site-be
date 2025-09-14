@@ -11,6 +11,7 @@ import { EventsModule } from './events/events.module'
 import { VideosModule } from './videos/videos.module'
 import { AlbumsModule } from './albums/albums.module'
 import { CodeProjectsModule } from './code-projects/code-projects.module'
+import { TriviaModule } from './trivia/trivia.module'
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { CodeProjectsModule } from './code-projects/code-projects.module'
     VideosModule,
     AlbumsModule,
     CodeProjectsModule,
+    TriviaModule,
   ],
   controllers: [AppController],
   providers: [AppService],
